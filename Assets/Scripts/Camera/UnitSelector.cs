@@ -1,16 +1,19 @@
 ﻿using UnityEngine;
 
-public class UnitSelector : MonoBehaviour
+namespace MCC
 {
-	private void Update()
+	public class UnitSelector : MonoBehaviour
 	{
-		if (Input.GetMouseButtonDown(0))
+		private void Update()
 		{
-			RaycastHit hit = new RaycastHit();
-			Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-			if (Physics.Raycast(ray, out hit))
+			if (Input.GetMouseButtonDown(0))
 			{
-				// TODO: Left off here. Look at http://www.bendangelo.me/tutorials/rts/2015/12/19/unity-rts-game-architecture.html
+				RaycastHit hit = new RaycastHit();
+				Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+				if (Physics.Raycast(ray, out hit))
+				{
+					// TODO: Left off here. Look at http://www.bendangelo.me/tutorials/rts/2015/12/19/unity-rts-game-architecture.html
+				}
 			}
 		}
 	}

@@ -1,3 +1,6 @@
-﻿public class ArtificialIntelligence : Controller
+﻿namespace MCC
 { 
+	public class ArtificialIntelligence : Controller
+	{ 
+	}
 }

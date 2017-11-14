@@ -1,23 +1,26 @@
 ﻿using UnityEngine;
 
-public sealed class EventManager : MonoBehaviour {
-
-	private static EventManager instance;
-	private static readonly object instantiationLock = new object();
-
-	private EventManager() { }
-
-	public static EventManager Instance
+namespace MCC
+{ 
+	public sealed class EventManager : MonoBehaviour
 	{
-		get
+		private static EventManager instance;
+		private static readonly object instantiationLock = new object();
+
+		private EventManager() { }
+
+		public static EventManager Instance
 		{
-			lock (instantiationLock)
+			get
 			{
-				if (instance == null)
+				lock (instantiationLock)
 				{
-					instance = new EventManager();
+					if (instance == null)
+					{
+						instance = new EventManager();
+					}
+					return instance;
 				}
-				return instance;
 			}
 		}
 	}
