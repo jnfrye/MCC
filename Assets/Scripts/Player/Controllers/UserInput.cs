@@ -61,11 +61,11 @@ namespace MCC
 			float mouseYRatio = mouseY / Screen.height;
 			int borderDirection = 0;
 			// Camera pitch
-			if (GlobalConstants.Camera.TopOfScreen.Contains(mouseYRatio))
+			if (GlobalConstants.Screen.TopBorder.Contains(mouseYRatio))
 			{
 				borderDirection = 1;
 			}
-			else if (GlobalConstants.Camera.BottomOfScreen.Contains(mouseYRatio))
+			else if (GlobalConstants.Screen.BottomBorder.Contains(mouseYRatio))
 			{
 				borderDirection = -1;
 			}
