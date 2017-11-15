@@ -1,4 +1,7 @@
-﻿using UnityEngine;
+﻿/*
+* Original file: Copyright 2017 Ben D'Angelo. See license file for copyright information.
+*/
+using UnityEngine;
 
 namespace MCC
 { 
