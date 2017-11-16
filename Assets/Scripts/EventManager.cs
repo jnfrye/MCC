@@ -70,6 +70,29 @@ namespace MCC
 			return internalDelegate;
 		}
 
+		public void RemoveListener<TEvent>(EventDelegate<TEvent> eventDelegate) where TEvent : GameEvent
+		{ // TODO I don't understand this code either, read through it
+			EventDelegate internalDelegate;
+			if (delegateLookup.TryGetValue(eventDelegate, out internalDelegate))
+			{
+				EventDelegate tempDelegate;
+				if (delegates.TryGetValue(typeof(TEvent), out tempDelegate))
+				{
+					tempDelegate -= internalDelegate;
+					if (tempDelegate == null)
+					{
+						delegates.Remove(typeof(TEvent));
+					}
+					else
+					{
+						delegates[typeof(TEvent)] = tempDelegate;
+					}
+				}
+
+				delegateLookup.Remove(eventDelegate);
+			}
+		}
+
 		public bool HasListener<TEvent>(EventDelegate<TEvent> eventDelegate) where TEvent : GameEvent
 		{
 			return delegateLookup.ContainsKey(eventDelegate);
