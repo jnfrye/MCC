@@ -40,22 +40,17 @@ namespace MCC
 		}
 
 		public void AddListener<TEvent>(EventDelegate<TEvent> newListener) where TEvent : GameEvent
-		{
-			AddDelegate<TEvent>(newListener);
-		}
-
-		private EventDelegate AddDelegate<TEvent>(EventDelegate<TEvent> eventDelegate) where TEvent : GameEvent
 		{ // NOTE I don't really understand this code, gotta read through it
-			// Early-out if we've already registered this delegate
-			if (HasListener<TEvent>(eventDelegate))
-			{ // TODO Throw an error here instead of returning null
-				return null;
+		  // Early-out if we've already registered this delegate
+			if (HasListener<TEvent>(newListener))
+			{ // TODO Throw an error here instead?
+				Debug.LogWarning("Listener: " + newListener.ToString() + " was already registered."); ;
 			}
 
 			// Create a new non-generic delegate which calls our generic one.
 			// This is the delegate we actually invoke.
-			EventDelegate internalDelegate = (e) => eventDelegate((TEvent)e);
-			delegateLookup[eventDelegate] = internalDelegate;
+			EventDelegate internalDelegate = (e) => newListener((TEvent)e);
+			delegateLookup[newListener] = internalDelegate;
 
 			EventDelegate tempDelegate;
 			if (delegates.TryGetValue(typeof(TEvent), out tempDelegate))
@@ -66,8 +61,6 @@ namespace MCC
 			{
 				delegates[typeof(TEvent)] = internalDelegate;
 			}
-
-			return internalDelegate;
 		}
 
 		public void RemoveListener<TEvent>(EventDelegate<TEvent> eventDelegate) where TEvent : GameEvent
