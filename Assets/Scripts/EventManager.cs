@@ -47,7 +47,7 @@ namespace MCC
 		private EventDelegate AddDelegate<TEvent>(EventDelegate<TEvent> eventDelegate) where TEvent : GameEvent
 		{ // NOTE I don't really understand this code, gotta read through it
 			// Early-out if we've already registered this delegate
-			if (delegateLookup.ContainsKey(eventDelegate))
+			if (HasListener<TEvent>(eventDelegate))
 			{ // TODO Throw an error here instead of returning null
 				return null;
 			}
