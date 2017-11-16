@@ -110,5 +110,18 @@ namespace MCC
 			eventQueue.Enqueue(gameEvent);
 			return true;
 		}
+
+		public void TriggerEvent(GameEvent gameEvent)
+		{
+			EventDelegate eventDelegate;
+			if (delegates.TryGetValue(gameEvent.GetType(), out eventDelegate))
+			{
+				eventDelegate.Invoke(gameEvent);
+			}
+			else
+			{ // TODO Maybe throw exception?
+				Debug.LogWarning("Event: " + gameEvent.GetType() + " has no listeners");
+			}
+		}
 	}
 }
