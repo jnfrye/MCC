@@ -97,8 +97,7 @@ namespace MCC
 		{
 			return delegateLookup.ContainsKey(eventDelegate);
 		}
-
-		//Inserts the event into the current queue.
+		
 		public bool TryQueueEvent(GameEvent gameEvent)
 		{
 			if (!delegates.ContainsKey(gameEvent.GetType()))
@@ -109,6 +108,15 @@ namespace MCC
 
 			eventQueue.Enqueue(gameEvent);
 			return true;
+		}
+		
+		private void Update()
+		{
+			while (eventQueue.Count > 0)
+			{
+				GameEvent nextEvent = eventQueue.Dequeue() as GameEvent;
+				TriggerEvent(nextEvent);
+			}
 		}
 
 		public void TriggerEvent(GameEvent gameEvent)
