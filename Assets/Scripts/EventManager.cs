@@ -97,5 +97,18 @@ namespace MCC
 		{
 			return delegateLookup.ContainsKey(eventDelegate);
 		}
+
+		//Inserts the event into the current queue.
+		public bool TryQueueEvent(GameEvent gameEvent)
+		{
+			if (!delegates.ContainsKey(gameEvent.GetType()))
+			{ // TODO Make this throw an exception maybe? So we don't have to return a bool
+				Debug.LogWarning("EventManager: QueueEvent failed due to no listeners for event: " + gameEvent.GetType());
+				return false;
+			}
+
+			eventQueue.Enqueue(gameEvent);
+			return true;
+		}
 	}
 }
