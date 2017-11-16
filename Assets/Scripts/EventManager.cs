@@ -44,18 +44,18 @@ namespace MCC
 			AddDelegate<TEvent>(newListener);
 		}
 
-		private EventDelegate AddDelegate<TEvent>(EventDelegate<TEvent> newDelegate) where TEvent : GameEvent
+		private EventDelegate AddDelegate<TEvent>(EventDelegate<TEvent> eventDelegate) where TEvent : GameEvent
 		{ // NOTE I don't really understand this code, gotta read through it
 			// Early-out if we've already registered this delegate
-			if (delegateLookup.ContainsKey(newDelegate))
+			if (delegateLookup.ContainsKey(eventDelegate))
 			{ // TODO Throw an error here instead of returning null
 				return null;
 			}
 
 			// Create a new non-generic delegate which calls our generic one.
 			// This is the delegate we actually invoke.
-			EventDelegate internalDelegate = (e) => newDelegate((TEvent)e);
-			delegateLookup[newDelegate] = internalDelegate;
+			EventDelegate internalDelegate = (e) => eventDelegate((TEvent)e);
+			delegateLookup[eventDelegate] = internalDelegate;
 
 			EventDelegate tempDelegate;
 			if (delegates.TryGetValue(typeof(TEvent), out tempDelegate))
@@ -68,6 +68,11 @@ namespace MCC
 			}
 
 			return internalDelegate;
+		}
+
+		public bool HasListener<TEvent>(EventDelegate<TEvent> eventDelegate) where TEvent : GameEvent
+		{
+			return delegateLookup.ContainsKey(eventDelegate);
 		}
 	}
 }
