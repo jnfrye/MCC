@@ -6,14 +6,14 @@ namespace MCC
 	{
 		private void Update()
 		{
-			PublishMovementCommand();
+			IssueMovementCommands();
 			PublishYawCommand();
 			PublishScrollCommand();
 			PublishScreenBorderCommand();
 		}
 
 		// TODO Notice how similar the next several methods are... abstract this?
-		private void PublishMovementCommand()
+		private void IssueMovementCommands()
 		{
 			float xMovement = Input.GetAxis("Horizontal");
 			float yMovement = Input.GetAxis("Vertical");
@@ -22,7 +22,7 @@ namespace MCC
 			Vector3 movementDirection = new Vector3(xMovement, yMovement, zMovement);
 			if (movementDirection != Vector3.zero)
 			{
-				OnMovementCommand(movementDirection);
+				EventManager.Instance.TriggerEvent(new MovementCommandIssued(movementDirection));
 			}
 		}
 
