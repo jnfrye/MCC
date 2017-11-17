@@ -8,9 +8,15 @@ namespace MCC
 		public event YawAction YawCommand = (_) => { };
 		protected void OnYawCommand(float yawDirection) { YawCommand(yawDirection); }
 
-		public delegate void ZoomAction(float zoomDirection);
-		public event ZoomAction ZoomCommand = (_) => { };
-		protected void OnZoomCommand(float zoomDirection) { ZoomCommand(zoomDirection); }
+		public class ZoomCommandIssued : GameEvent
+		{
+			public float zoomDirection;
+
+			public ZoomCommandIssued(float zoomDirection)
+			{
+				this.zoomDirection = zoomDirection;
+			}
+		}
 
 		public class TiltCommandIssued : GameEvent
 		{

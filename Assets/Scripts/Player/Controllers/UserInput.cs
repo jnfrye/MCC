@@ -8,22 +8,27 @@ namespace MCC
 		{
 			IssueMovementCommands();
 			PublishYawCommand();
-			PublishScrollCommand();
-			IssueTiltCommand();
+			IssueZoomCommands();
+			IssueTiltCommands();
 		}
 
 		// TODO Notice how similar the next several methods are... abstract this?
-		private void IssueMovementCommands()
+		private void IssueMovementCommands() // TODO maybe these should be moved to the controller class?
+		{
+			Vector3 movementDirection = GetMovementInput();
+			if (movementDirection != Vector3.zero)
+			{
+				EventManager.Instance.TriggerEvent(new MovementCommandIssued(movementDirection));
+			}
+		}
+
+		private Vector3 GetMovementInput()
 		{
 			float xMovement = Input.GetAxis("Horizontal");
 			float yMovement = Input.GetAxis("Vertical");
 			float zMovement = Input.GetAxis("Forward");
 
-			Vector3 movementDirection = new Vector3(xMovement, yMovement, zMovement);
-			if (movementDirection != Vector3.zero)
-			{
-				EventManager.Instance.TriggerEvent(new MovementCommandIssued(movementDirection));
-			}
+			return new Vector3(xMovement, yMovement, zMovement);
 		}
 
 		private void PublishYawCommand()
@@ -36,28 +41,34 @@ namespace MCC
 			}
 		}
 
-		private void PublishScrollCommand()
+		private void IssueZoomCommands()
 		{
-			float scrollDirection = Input.GetAxis("Mouse ScrollWheel");
-
-			if (scrollDirection != 0f)
+			float zoomDirection = GetZoomInput();
+			
+			if (zoomDirection != 0f)
 			{
-				OnZoomCommand(scrollDirection);
+				EventManager.Instance.TriggerEvent(new ZoomCommandIssued(zoomDirection));
 			}
 		}
 
-		private void IssueTiltCommand() // TODO get better name
+		private float GetZoomInput()
 		{
-			int screenBorderDirection = DetermineScreenBorderDirection(Input.mousePosition.y);
+			return Input.GetAxis("Mouse ScrollWheel");
+		}
 
-			if (screenBorderDirection != 0)
+		private void IssueTiltCommands() // TODO get better name
+		{
+			int tiltDirection = GetTiltInput();
+
+			if (tiltDirection != 0)
 			{
-				EventManager.Instance.TriggerEvent(new TiltCommandIssued(screenBorderDirection));
+				EventManager.Instance.TriggerEvent(new TiltCommandIssued(tiltDirection));
 			}
 		}
 
-		private int DetermineScreenBorderDirection(float mouseY) // TODO get better name
+		private int GetTiltInput() // TODO get better name
 		{
+			float mouseY = Input.mousePosition.y;
 			float mouseYRatio = mouseY / Screen.height;
 			int borderDirection = 0;
 			// Camera pitch

@@ -22,13 +22,13 @@ namespace MCC
 		private void OnEnable()
 		{
 			EventManager.Instance.AddListener<Controller.TiltCommandIssued>(OnTiltCommand);
-			controller.ZoomCommand += PerformCameraZoom;
+			EventManager.Instance.AddListener<Controller.ZoomCommandIssued>(OnZoomCommand);
 		}
 
 		private void OnDisable()
 		{
 			EventManager.Instance.RemoveListener<Controller.TiltCommandIssued>(OnTiltCommand);
-			controller.ZoomCommand -= PerformCameraZoom;
+			EventManager.Instance.RemoveListener<Controller.ZoomCommandIssued>(OnZoomCommand);
 		}
 
 		private void OnTiltCommand(Controller.TiltCommandIssued tiltCommand)
@@ -36,14 +36,9 @@ namespace MCC
 			PerformCameraTilt(tiltCommand.tiltDirection);
 		}
 
-		private void PerformCameraZoom(float zoomDirection)
+		private void OnZoomCommand(Controller.ZoomCommandIssued zoomCommand)
 		{
-			float FOVChange = zoomDirection * zoomSpeed * Time.deltaTime;
-			float newFOV = Camera.main.fieldOfView - FOVChange;
-			if (allowedFOVs.Contains(newFOV))
-			{
-				Camera.main.fieldOfView = newFOV;
-			}
+			PerformCameraZoom(zoomCommand.zoomDirection);
 		}
 
 		private void PerformCameraTilt(int screenBorderDirection)
@@ -55,6 +50,16 @@ namespace MCC
 			if (allowedTiltAngles.Contains(newTiltAngle))
 			{
 				Camera.main.transform.Rotate(eulerRotation);
+			}
+		}
+
+		private void PerformCameraZoom(float zoomDirection)
+		{
+			float FOVChange = zoomDirection * zoomSpeed * Time.deltaTime;
+			float newFOV = Camera.main.fieldOfView - FOVChange;
+			if (allowedFOVs.Contains(newFOV))
+			{
+				Camera.main.fieldOfView = newFOV;
 			}
 		}
 	}
