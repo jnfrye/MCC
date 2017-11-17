@@ -12,8 +12,6 @@ namespace MCC
 
 	public sealed class EventManager : MonoBehaviour
 	{
-		private static EventManager instance;
-		private static readonly object instantiationLock = new object();
 		private Queue eventQueue = new Queue();
 
 		// TODO Definitely need better names for these
@@ -23,6 +21,9 @@ namespace MCC
 		// TODO I don't know if the name change here was good
 		public delegate void Listener<TEvent>(TEvent gameEvent) where TEvent : GameEvent;
 		private delegate void Listener(GameEvent gameEvent);
+
+		private static EventManager instance;
+		private static readonly object instantiationLock = new object();
 
 		private EventManager() { }
 
