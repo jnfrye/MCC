@@ -10,10 +10,8 @@ namespace MCC
 {
 	public abstract class GameEvent { }
 
-	public sealed class EventManager : MonoBehaviour
+	public sealed class EventManager
 	{
-		private Queue eventQueue = new Queue();
-
 		// TODO Definitely need better names for these
 		private Dictionary<Type, Listener> listenersByType = new Dictionary<Type, Listener>();
 		private Dictionary<Delegate, Listener> listenersByDelegate = new Dictionary<Delegate, Listener>();
@@ -93,27 +91,6 @@ namespace MCC
 			return listenersByDelegate.ContainsKey(listener);
 		}
 		
-		public bool TryQueueEvent(GameEvent gameEvent)
-		{
-			if (!listenersByType.ContainsKey(gameEvent.GetType()))
-			{ // TODO Make this throw an exception maybe? So we don't have to return a bool
-				Debug.LogWarning("EventManager: QueueEvent failed due to no listeners for event: " + gameEvent.GetType());
-				return false;
-			}
-
-			eventQueue.Enqueue(gameEvent);
-			return true;
-		}
-		
-		private void Update()
-		{
-			while (eventQueue.Count > 0)
-			{
-				GameEvent nextEvent = eventQueue.Dequeue() as GameEvent;
-				TriggerEvent(nextEvent);
-			}
-		}
-
 		public void TriggerEvent(GameEvent gameEvent)
 		{
 			Listener listener;
