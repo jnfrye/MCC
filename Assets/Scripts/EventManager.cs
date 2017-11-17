@@ -16,11 +16,13 @@ namespace MCC
 		private static readonly object instantiationLock = new object();
 		private Queue eventQueue = new Queue();
 
-		private Dictionary<Type, EventDelegate> delegates = new Dictionary<Type, EventDelegate>();
-		private Dictionary<Delegate, EventDelegate> delegateLookup = new Dictionary<Delegate, EventDelegate>();
+		// TODO Definitely need better names for these
+		private Dictionary<Type, Listener> listenersByType = new Dictionary<Type, Listener>();
+		private Dictionary<Delegate, Listener> listenersByDelegate = new Dictionary<Delegate, Listener>();
 
-		public delegate void EventDelegate<T>(T e) where T : GameEvent;
-		private delegate void EventDelegate(GameEvent e);
+		// TODO I don't know if the name change here was good
+		public delegate void Listener<TEvent>(TEvent gameEvent) where TEvent : GameEvent;
+		private delegate void Listener(GameEvent gameEvent);
 
 		private EventManager() { }
 
@@ -39,61 +41,60 @@ namespace MCC
 			}
 		}
 
-		public void AddListener<TEvent>(EventDelegate<TEvent> newListener) where TEvent : GameEvent
+		public void AddListener<TEvent>(Listener<TEvent> newListener) where TEvent : GameEvent
 		{ // NOTE I don't really understand this code, gotta read through it
-		  // Early-out if we've already registered this delegate
 			if (HasListener<TEvent>(newListener))
 			{ // TODO Throw an error here instead?
-				Debug.LogWarning("Listener: " + newListener.ToString() + " was already registered."); ;
+				Debug.LogWarning("Listener: " + newListener + " was already registered."); ;
 			}
 
 			// Create a new non-generic delegate which calls our generic one.
 			// This is the delegate we actually invoke.
-			EventDelegate internalDelegate = (e) => newListener((TEvent)e);
-			delegateLookup[newListener] = internalDelegate;
+			Listener internalListener = (gameEvent) => newListener((TEvent)gameEvent);
+			listenersByDelegate[newListener] = internalListener;
 
-			EventDelegate tempDelegate;
-			if (delegates.TryGetValue(typeof(TEvent), out tempDelegate))
+			Listener tempListener;
+			if (listenersByType.TryGetValue(typeof(TEvent), out tempListener))
 			{
-				delegates[typeof(TEvent)] = tempDelegate += internalDelegate;
+				listenersByType[typeof(TEvent)] = tempListener += internalListener;
 			}
 			else
 			{
-				delegates[typeof(TEvent)] = internalDelegate;
+				listenersByType[typeof(TEvent)] = internalListener;
 			}
 		}
 
-		public void RemoveListener<TEvent>(EventDelegate<TEvent> eventDelegate) where TEvent : GameEvent
+		public void RemoveListener<TEvent>(Listener<TEvent> listener) where TEvent : GameEvent
 		{ // TODO I don't understand this code either, read through it
-			EventDelegate internalDelegate;
-			if (delegateLookup.TryGetValue(eventDelegate, out internalDelegate))
+			Listener internalListener;
+			if (listenersByDelegate.TryGetValue(listener, out internalListener))
 			{
-				EventDelegate tempDelegate;
-				if (delegates.TryGetValue(typeof(TEvent), out tempDelegate))
+				Listener tempListener;
+				if (listenersByType.TryGetValue(typeof(TEvent), out tempListener))
 				{
-					tempDelegate -= internalDelegate;
-					if (tempDelegate == null)
+					tempListener -= internalListener;
+					if (tempListener == null)
 					{
-						delegates.Remove(typeof(TEvent));
+						listenersByType.Remove(typeof(TEvent));
 					}
 					else
 					{
-						delegates[typeof(TEvent)] = tempDelegate;
+						listenersByType[typeof(TEvent)] = tempListener;
 					}
 				}
 
-				delegateLookup.Remove(eventDelegate);
+				listenersByDelegate.Remove(listener);
 			}
 		}
 
-		public bool HasListener<TEvent>(EventDelegate<TEvent> eventDelegate) where TEvent : GameEvent
+		public bool HasListener<TEvent>(Listener<TEvent> listener) where TEvent : GameEvent
 		{
-			return delegateLookup.ContainsKey(eventDelegate);
+			return listenersByDelegate.ContainsKey(listener);
 		}
 		
 		public bool TryQueueEvent(GameEvent gameEvent)
 		{
-			if (!delegates.ContainsKey(gameEvent.GetType()))
+			if (!listenersByType.ContainsKey(gameEvent.GetType()))
 			{ // TODO Make this throw an exception maybe? So we don't have to return a bool
 				Debug.LogWarning("EventManager: QueueEvent failed due to no listeners for event: " + gameEvent.GetType());
 				return false;
@@ -114,10 +115,10 @@ namespace MCC
 
 		public void TriggerEvent(GameEvent gameEvent)
 		{
-			EventDelegate eventDelegate;
-			if (delegates.TryGetValue(gameEvent.GetType(), out eventDelegate))
+			Listener listener;
+			if (listenersByType.TryGetValue(gameEvent.GetType(), out listener))
 			{
-				eventDelegate.Invoke(gameEvent);
+				listener.Invoke(gameEvent);
 			}
 			else
 			{ // TODO Maybe throw exception?
