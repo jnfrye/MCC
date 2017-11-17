@@ -7,7 +7,7 @@ namespace MCC
 		private void Update()
 		{
 			IssueMovementCommands();
-			PublishYawCommand();
+			IssueYawCommands();
 			IssueZoomCommands();
 			IssueTiltCommands();
 		}
@@ -31,14 +31,19 @@ namespace MCC
 			return new Vector3(xMovement, yMovement, zMovement);
 		}
 
-		private void PublishYawCommand()
+		private void IssueYawCommands()
 		{
-			float yawDirection = Input.GetAxis("Turn");
+			float yawDirection = GetYawInput();
 
 			if (yawDirection != 0f)
 			{
-				OnYawCommand(yawDirection);
+				EventManager.Instance.TriggerEvent(new YawCommandIssued(yawDirection));
 			}
+		}
+
+		private float GetYawInput()
+		{
+			return Input.GetAxis("Turn");
 		}
 
 		private void IssueZoomCommands()

@@ -4,9 +4,15 @@ namespace MCC
 { 
 	public class Controller : MonoBehaviour
 	{
-		public delegate void YawAction(float yawDirection);
-		public event YawAction YawCommand = (_) => { };
-		protected void OnYawCommand(float yawDirection) { YawCommand(yawDirection); }
+		public class YawCommandIssued : GameEvent
+		{
+			public float yawDirection;
+
+			public YawCommandIssued(float yawDirection)
+			{
+				this.yawDirection = yawDirection;
+			}
+		}
 
 		public class ZoomCommandIssued : GameEvent
 		{

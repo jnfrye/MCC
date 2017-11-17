@@ -14,13 +14,13 @@ namespace MCC
 		private void OnEnable()
 		{
 			EventManager.Instance.AddListener<Controller.MovementCommandIssued>(OnMovementCommand);
-			controller.YawCommand += PerformRotation;
+			EventManager.Instance.AddListener<Controller.YawCommandIssued>(OnYawCommand);
 		}
 
 		private void OnDisable()
 		{
 			EventManager.Instance.RemoveListener<Controller.MovementCommandIssued>(OnMovementCommand);
-			controller.YawCommand -= PerformRotation;
+			EventManager.Instance.RemoveListener<Controller.YawCommandIssued>(OnYawCommand);
 		}
 
 		private void OnMovementCommand(Controller.MovementCommandIssued movementCommand)
@@ -33,6 +33,11 @@ namespace MCC
 			Vector3 localVelocity = speed * movementCommand;
 			Vector3 globalVelocity = transform.TransformDirection(localVelocity);
 			rb.velocity = globalVelocity;
+		}
+
+		private void OnYawCommand(Controller.YawCommandIssued yawCommand)
+		{
+			PerformRotation(yawCommand.yawDirection);
 		}
 
 		private void PerformRotation(float turningMovement)
