@@ -9,7 +9,7 @@ namespace MCC
 			IssueMovementCommands();
 			PublishYawCommand();
 			PublishScrollCommand();
-			PublishScreenBorderCommand();
+			IssueTiltCommand();
 		}
 
 		// TODO Notice how similar the next several methods are... abstract this?
@@ -46,13 +46,13 @@ namespace MCC
 			}
 		}
 
-		private void PublishScreenBorderCommand() // TODO get better name
+		private void IssueTiltCommand() // TODO get better name
 		{
 			int screenBorderDirection = DetermineScreenBorderDirection(Input.mousePosition.y);
 
 			if (screenBorderDirection != 0)
 			{
-				OnTiltCommand(screenBorderDirection);
+				EventManager.Instance.TriggerEvent(new TiltCommandIssued(screenBorderDirection));
 			}
 		}
 

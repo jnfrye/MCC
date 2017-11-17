@@ -21,14 +21,19 @@ namespace MCC
 
 		private void OnEnable()
 		{
-			controller.TiltCommand += PerformCameraTilt;
+			EventManager.Instance.AddListener<Controller.TiltCommandIssued>(OnTiltCommand);
 			controller.ZoomCommand += PerformCameraZoom;
 		}
 
 		private void OnDisable()
 		{
-			controller.TiltCommand -= PerformCameraTilt;
+			EventManager.Instance.RemoveListener<Controller.TiltCommandIssued>(OnTiltCommand);
 			controller.ZoomCommand -= PerformCameraZoom;
+		}
+
+		private void OnTiltCommand(Controller.TiltCommandIssued tiltCommand)
+		{
+			PerformCameraTilt(tiltCommand.tiltDirection);
 		}
 
 		private void PerformCameraZoom(float zoomDirection)

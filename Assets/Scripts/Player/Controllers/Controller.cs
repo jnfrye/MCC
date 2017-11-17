@@ -12,9 +12,15 @@ namespace MCC
 		public event ZoomAction ZoomCommand = (_) => { };
 		protected void OnZoomCommand(float zoomDirection) { ZoomCommand(zoomDirection); }
 
-		public delegate void TiltAction(int tiltDirection);
-		public event TiltAction TiltCommand = (_) => { };
-		protected void OnTiltCommand(int tiltDirection) { TiltCommand(tiltDirection); }
+		public class TiltCommandIssued : GameEvent
+		{
+			public int tiltDirection;
+
+			public TiltCommandIssued(int tiltDirection)
+			{
+				this.tiltDirection = tiltDirection;
+			}
+		}
 
 		public class MovementCommandIssued : GameEvent
 		{
