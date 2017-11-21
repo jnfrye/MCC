@@ -14,16 +14,6 @@ namespace MCC
 			}
 		}
 
-		public class ZoomCommandIssued : GameEvent
-		{
-			public float zoomDirection;
-
-			public ZoomCommandIssued(float zoomDirection)
-			{
-				this.zoomDirection = zoomDirection;
-			}
-		}
-
 		public class TiltCommandIssued : GameEvent
 		{
 			public int tiltDirection;

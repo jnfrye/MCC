@@ -88,4 +88,14 @@ namespace MCC
 			return borderDirection;
 		}
 	}
+
+	public class ZoomCommandIssued : GameEvent
+	{
+		public float zoomDirection;
+
+		public ZoomCommandIssued(float zoomDirection)
+		{
+			this.zoomDirection = zoomDirection;
+		}
+	}
 }
