@@ -9,16 +9,6 @@ namespace MCC
 		private const float tiltSpeed = 16f;
 		private const float zoomSpeed = 1000f;
 
-		public void OnTestEvent()
-		{
-			Debug.LogError("IT WORKED!");
-		}
-
-		public static void OnStringTestEvent(string arg)
-		{
-			Debug.LogError(arg);
-		}
-
 		private void OnEnable()
 		{
 			EventManager.Instance.AddListener<Controller.TiltCommandIssued>(OnTiltCommand);
