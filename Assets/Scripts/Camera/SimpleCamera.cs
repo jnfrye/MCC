@@ -2,7 +2,7 @@
 
 namespace MCC
 { 
-	public class RealCamera : Entity
+	public class SimpleCamera : Entity
 	{
 		private readonly Math.Interval allowedTiltAngles = new Math.Interval(15, 80);
 		private readonly Math.Interval allowedFOVs = new Math.Interval(7, 65);
